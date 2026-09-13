@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add optional Prism, CodeMirror, and highlight.js adapters, with the website using the shared CodeMirror stream parser.
+- Add VS Code and Sublime Text syntax packages for Knap Markdown, with shared generated grammars, template comments, and snippets.
+
 ## 0.4.2
 
 - Add `{# ... #}` template comments, including multiline comments, with syntax errors for unclosed comments.
