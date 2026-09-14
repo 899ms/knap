@@ -1,13 +1,19 @@
 # Changelog
 
-## Unreleased
+## 0.6.0
 
-- Preserve string types in `yaml` and `yaml_property`, quoting scalar strings such as `"null"`, `"true"`, and `"123"` instead of emitting them as YAML nulls, booleans, or numbers. Typed scalar values remain unquoted, and `parse_json` can explicitly decode JSON text before serialization.
-- Preserve typed values through filter chains: `calc`, `round`, and `length` now return numbers; `first` and `last` return the selected value; and `nth` returns a typed subset array. `number_format` remains text.
-- Reject blank or partially numeric arithmetic input, and preserve invalid or non-finite `calc` and `round` values with a warning instead of silently coercing them or emitting `Infinity` or `null`.
-- Count singleton arrays as collections in `length`, and return `null` from `first` and `last` when an array is empty.
-- Render typed selector results consistently: singleton `nth` results unwrap during interpolation and downstream text filters, while objects and nested arrays selected by `first` or `last` render as JSON. Numeric strings rounded inside collections become numbers.
-- Align the exported `applyFiltersWithRegistry` helper with template rendering by emitting empty text, rather than `"null"`, when the final filtered value is `null`.
+This release makes filter chains preserve semantic value types. Review templates that serialize transformed values to YAML or depend on the exact text produced by collection filters.
+
+### Breaking changes
+
+- `yaml` and `yaml_property` now quote all strings, including `"null"`, `"true"`, and `"123"`. Typed nulls, booleans, and numbers remain unquoted. Templates that intentionally store JSON text can decode it with `parse_json` before serialization.
+- `calc`, `round`, and `length` now return numbers instead of numeric text. Downstream assignments and serializers preserve that type, so YAML such as `price: "42.57"` becomes `price: 42.57`. `number_format` continues to return text.
+- Numeric parsing is stricter. Blank `calc` input and partially numeric `round` input such as `"42abc"` are preserved with a warning instead of being coerced. Non-finite arithmetic results preserve the original input rather than emitting `Infinity` or `null`.
+- `round` preserves collection structure and converts successfully rounded numeric-string members to numbers.
+- `length` counts singleton arrays as collections, so `[42] | length` changes from `2` to `1`.
+- `first` and `last` preserve the selected value's type. Selected objects and nested arrays now render as JSON, and empty arrays return `null` instead of `[]`.
+- `nth` returns a typed subset array. A singleton primitive result now unwraps during interpolation and before downstream text filters, so `[1, 2] | nth:2` renders as `2` instead of `[2]`.
+- The exported `applyFiltersWithRegistry` helper now renders a final `null` result as empty text instead of `"null"`, matching template interpolation.
 
 ## 0.5.1
 
