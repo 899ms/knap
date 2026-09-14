@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Attach ready-to-install VS Code and Sublime Text syntax packages to tagged GitHub releases.
+
 ## 0.5.0
 
 - Add optional Prism, CodeMirror, and highlight.js adapters, with the website using the shared CodeMirror stream parser.
