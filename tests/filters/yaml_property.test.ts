@@ -21,6 +21,32 @@ describe('yaml_property filter', () => {
 		})).resolves.toBe(expected);
 	});
 
+	test.each([
+		['null', 'page: "null"'],
+		['Null', 'page: "Null"'],
+		['TRUE', 'page: "TRUE"'],
+		['false', 'page: "false"'],
+		['123', 'page: "123"'],
+		['1.5', 'page: "1.5"'],
+		[' null ', 'page: " null "'],
+	])('preserves the scalar string %j', async (value, expected) => {
+		await expect(engine.renderOrThrow('{{ value | yaml_property:"page" }}', {
+			variables: { value },
+		})).resolves.toBe(expected);
+	});
+
+	test('preserves the type returned by preceding filters', () => {
+		expect(applyFiltersWithRegistry(
+			[2, 3], 'sum | yaml_property:"sum"', standardFilters, { variables: {} },
+		)).toBe('sum: 5');
+		expect(applyFiltersWithRegistry(
+			42.567, 'round:2 | yaml_property:"price"', standardFilters, { variables: {} },
+		)).toBe('price: "42.57"');
+		expect(applyFiltersWithRegistry(
+			[2, 3], 'length | parse_json | yaml_property:"count"', standardFilters, { variables: {} },
+		)).toBe('count: 2');
+	});
+
 	test('nests arrays and objects with two-space indentation', async () => {
 		const value = { year: 1999, genres: ['Action', 'Sci-fi'], cast: [{ name: 'Keanu', roles: ['Neo'] }] };
 		await expect(engine.renderOrThrow('{{ value | yaml_property:"movie" }}', { variables: { value } }))

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Preserve string types in `yaml` and `yaml_property`, quoting scalar strings such as `"null"`, `"true"`, and `"123"` instead of emitting them as YAML nulls, booleans, or numbers. Typed scalar values remain unquoted, and `parse_json` can be used for explicit coercion.
+
 ## 0.5.1
 
 - Attach ready-to-install VS Code and Sublime Text syntax packages to tagged GitHub releases.
