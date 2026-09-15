@@ -1,19 +1,25 @@
 {
 	"name": "knap",
 	"version": "0.6.0",
-	"description": "A flexible template engine for creating Markdown.",
+	"description": "A simple template language that turns data into Markdown.",
 	"keywords": [
-		"template",
 		"markdown",
-		"obsidian"
+		"language",
+		"template",
+		"templating",
+		"obsidian",
+		"cli",
+		"template-engine",
+		"template-language",
+		"knap"
 	],
-	"homepage": "https://github.com/obsidianmd/knap#readme",
+	"homepage": "https://knap.md",
 	"bugs": "https://github.com/obsidianmd/knap/issues",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/obsidianmd/knap.git"
 	},
-	"author": "Obsidian",
+	"author": "kepano",
 	"license": "MIT",
 	"publishConfig": {
 		"access": "public"
