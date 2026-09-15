@@ -59,17 +59,19 @@ function conditionOperatorRange(body: string, position: number, source: string) 
 // Scan delimiters outside strings, including unfinished tags while typing.
 export function templateTags(source: string) {
   const tags: { from: number; body: string; kind: string; closed: boolean; quoted: boolean }[] = [];
-  const opener = /\{[{%]/g;
+  const opener = /\{[{%#]/g;
   let match: RegExpExecArray | null;
   while ((match = opener.exec(source))) {
     const kind = match[0];
-    const close = kind === '{{' ? '}}' : '%}';
+    const close = kind === '{{' ? '}}' : kind === '{%' ? '%}' : '#}';
     const from = match.index + 2;
     let quote = '';
     let index = from;
     for (; index < source.length; index++) {
       const char = source[index];
-      if (quote) {
+      if (kind === '{#') {
+        if (source.startsWith(close, index)) break;
+      } else if (quote) {
         if (char === '\\') index++;
         else if (char === quote) quote = '';
       } else if (char === '"' || char === "'") quote = char;
@@ -210,7 +212,7 @@ function filterParameterCompletions(body: string, position: number, source: stri
 export function templateCompletions(source: string, position: number, variables: Record<string, unknown>, filters: TemplateSuggestion[]) {
   const before = source.slice(0, position);
   const tag = templateTags(before).at(-1);
-  if (!tag || tag.closed) return null;
+  if (!tag || tag.closed || tag.kind === '{#') return null;
   const body = tag.body;
   const scope = scopeAt(source.slice(0, tag.from - 2), variables);
   const parameters = filterParameterCompletions(body, position, source, filters, scope);

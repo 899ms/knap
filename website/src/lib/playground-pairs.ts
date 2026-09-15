@@ -10,6 +10,7 @@ export function pairTemplateInput(source: string, from: number, to: number, text
   const before = source.slice(0, from);
   const after = source.slice(to);
   const tag = activeTag(before);
+  if (tag?.kind === '{#') return null;
 
   // Typing an existing closing delimiter moves past it instead of duplicating it.
   if (tag && !tag.quoted && after.startsWith(text)) {
@@ -26,7 +27,9 @@ export function pairTemplateInput(source: string, from: number, to: number, text
   // Braces in tag expressions and quoted filter arguments remain literal input.
   if (activeTag(source.slice(0, start))) return null;
   const closing = opener === '{{' ? '}}' : '%}';
-  return { from, to, insert: text + (after.startsWith(closing) ? '' : closing), anchor: from + text.length };
+  // Reuse the closing brace inserted by ordinary bracket pairing.
+  const reuseBrace = text.length === 1 && after.startsWith('}') && !after.startsWith(closing);
+  return { from, to: reuseBrace ? to + 1 : to, insert: text + (after.startsWith(closing) ? '' : closing), anchor: from + text.length };
 }
 
 export function emptyTemplatePair(source: string, position: number) {

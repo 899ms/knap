@@ -5,6 +5,7 @@ import { StreamLanguage, HighlightStyle, syntaxHighlighting } from '@codemirror/
 import { tags } from '@lezer/highlight';
 import { templateCompletions, type TemplateSuggestion } from '../lib/playground-completions';
 import { emptyTemplatePair, pairTemplateInput } from '../lib/playground-pairs';
+import { markdownPairing } from '../lib/playground-markdown-pairs';
 import { markdownPunctuationAt } from '../lib/markdown-punctuation';
 import { knapStreamParser } from '../../../src/codemirror';
 import { createPlaygroundEditor } from './playground-editor';
@@ -56,6 +57,7 @@ export function createTemplateEditor(variables: () => Record<string, unknown>, w
       });
       return true;
     }),
+    markdownPairing(),
     syntaxHighlighting(templateHighlightStyle),
     autocompletion({
       icons: false,
